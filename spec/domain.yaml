@@ -1,0 +1,219 @@
+# ==========================================
+# DOMAIN SPECIFICATION - DO NOT MODIFY AFTER PHASE 1
+# ==========================================
+# This file defines the complete Task domain model.
+# All possible fields across all 5 phases are defined here.
+# Later phases may expose more fields but MUST NOT add new ones.
+
+version: "1.0.0"
+
+entities:
+  Task:
+    description: "Core task entity with all possible fields for 5-phase evolution"
+    
+    # ===== CORE FIELDS (Phase 1) =====
+    fields:
+      id:
+        type: string
+        required: true
+        description: "Unique identifier for the task"
+      
+      title:
+        type: string
+        required: true
+        description: "Task title/description"
+        constraints:
+          min_length: 1
+          max_length: 500
+      
+      status:
+        type: enum
+        required: true
+        description: "Current state of the task"
+        values:
+          - pending
+          - in_progress
+          - completed
+          - cancelled
+          - paused        # Task temporarily stopped
+          - on_hold       # Task waiting for external dependency
+        default: pending
+      
+      created_at:
+        type: timestamp
+        required: true
+        description: "When the task was created"
+        format: "ISO 8601 (YYYY-MM-DDTHH:mm:ss.sssZ)"
+      
+      updated_at:
+        type: timestamp
+        required: true
+        description: "When the task was last modified"
+        format: "ISO 8601 (YYYY-MM-DDTHH:mm:ss.sssZ)"
+      
+      # ===== PRIORITY & ORGANIZATION (Future Phases) =====
+      priority:
+        type: enum
+        required: false
+        description: "Task priority level"
+        values:
+          - low
+          - medium
+          - high
+          - urgent
+        default: medium
+      
+      tags:
+        type: array
+        required: false
+        description: "Categorization tags"
+        item_type: string
+        default: []
+      
+      category:
+        type: string
+        required: false
+        description: "Task category or project"
+      
+      # ===== TIME MANAGEMENT (Future Phases) =====
+      due_date:
+        type: timestamp
+        required: false
+        description: "When the task is due"
+        format: "ISO 8601 (YYYY-MM-DDTHH:mm:ss.sssZ)"
+      
+      start_date:
+        type: timestamp
+        required: false
+        description: "When to start working on the task"
+        format: "ISO 8601 (YYYY-MM-DDTHH:mm:ss.sssZ)"
+      
+      completed_at:
+        type: timestamp
+        required: false
+        description: "When the task was completed"
+        format: "ISO 8601 (YYYY-MM-DDTHH:mm:ss.sssZ)"
+      
+      estimated_duration:
+        type: integer
+        required: false
+        description: "Estimated time in minutes"
+      
+      actual_duration:
+        type: integer
+        required: false
+        description: "Actual time spent in minutes"
+      
+      # ===== RECURRENCE (Future Phases) =====
+      recurrence:
+        type: object
+        required: false
+        description: "Recurring task configuration"
+        fields:
+          enabled:
+            type: boolean
+            default: false
+          
+          frequency:
+            type: enum
+            values:
+              - daily
+              - weekly
+              - monthly
+              - yearly
+          
+          interval:
+            type: integer
+            description: "Repeat every N frequency units"
+            default: 1
+          
+          end_date:
+            type: timestamp
+            required: false
+      
+      # ===== HIERARCHY & RELATIONSHIPS (Future Phases) =====
+      parent_id:
+        type: string
+        required: false
+        description: "Parent task for subtasks"
+      
+      dependencies:
+        type: array
+        required: false
+        description: "IDs of tasks that must be completed first"
+        item_type: string
+        default: []
+      
+      # ===== RICH CONTENT (Future Phases) =====
+      description:
+        type: string
+        required: false
+        description: "Detailed task description"
+        constraints:
+          max_length: 5000
+      
+      notes:
+        type: string
+        required: false
+        description: "Additional notes or comments"
+      
+      attachments:
+        type: array
+        required: false
+        description: "File references or links"
+        item_type: string
+        default: []
+      
+      # ===== COLLABORATION (Future Phases) =====
+      assigned_to:
+        type: string
+        required: false
+        description: "User ID of assignee"
+      
+      created_by:
+        type: string
+        required: false
+        description: "User ID of creator"
+      
+      # ===== METADATA (Future Phases) =====
+      archived:
+        type: boolean
+        required: false
+        description: "Whether task is archived"
+        default: false
+      
+      deleted:
+        type: boolean
+        required: false
+        description: "Soft delete flag"
+        default: false
+      
+      metadata:
+        type: object
+        required: false
+        description: "Extensible metadata for future features"
+        fields:
+          custom_fields:
+            type: object
+            description: "User-defined custom fields for extensibility"
+            example:
+              project_code: "PROJ-001"
+              external_id: "ext-12345"
+              color: "#FF5733"
+
+# ===== VALIDATION RULES =====
+validation_rules:
+  - rule: "completed_at must be >= created_at"
+  - rule: "due_date should be >= start_date when both are set"
+  - rule: "status=completed requires completed_at to be set"
+  - rule: "parent_id cannot reference self"
+  - rule: "parent_id must reference an existing task in the domain"
+  - rule: "parent_id cannot create circular dependency chains"
+  - rule: "All timestamps must follow ISO 8601 format"
+  - rule: "status transitions must be valid (e.g., cannot go from completed to pending)"
+  - rule: "dependencies array must contain valid task IDs that exist in domain"
+
+# ==========================================
+# END OF DOMAIN SPECIFICATION
+# DO NOT MODIFY AFTER PHASE 1
+# ==========================================

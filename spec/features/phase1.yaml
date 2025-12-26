@@ -1,0 +1,112 @@
+# ==========================================
+# PHASE 1 - CLI TODO APP
+# ==========================================
+# Defines what is EXPOSED in Phase 1, not what exists in domain.
+# Phase 1 is a minimal CLI-based todo application.
+
+phase: 1
+name: "CLI Todo App"
+description: "Command-line interface for basic task management"
+
+# ===== EXPOSED FIELDS =====
+# Only these Task fields are visible/editable in Phase 1
+exposed_fields:
+  - id              # Read-only, auto-generated
+  - title           # Required for creation
+  - status          # pending | in_progress | completed
+  - created_at      # Read-only, auto-generated
+  - updated_at      # Read-only, auto-set
+
+# ===== EXPOSED SKILLS =====
+# Skills available through CLI in Phase 1
+exposed_skills:
+  - create_task:
+      description: "Add a new task"
+      cli_command: "add"
+      allowed_inputs:
+        - title       # Required
+        - status      # Optional
+  
+  - list_tasks:
+      description: "List all tasks"
+      cli_command: "list"
+      allowed_inputs:
+        - status      # Optional filter
+  
+  - get_task:
+      description: "Show task details"
+      cli_command: "show"
+      allowed_inputs:
+        - id          # Required
+  
+  - update_task:
+      description: "Update a task"
+      cli_command: "update"
+      allowed_inputs:
+        - id          # Required
+        - title       # Optional
+        - status      # Optional
+  
+  - delete_task:
+      description: "Delete a task"
+      cli_command: "delete"
+      allowed_inputs:
+        - id          # Required
+        - hard_delete # Optional, defaults to false
+  
+  - complete_task:
+      description: "Mark task as completed"
+      cli_command: "complete"
+      allowed_inputs:
+        - id          # Required
+
+# ===== INTERFACE =====
+interface:
+  type: cli
+  description: "Command-line interface only"
+  
+  output_formats:
+    - text:         # Default human-readable format
+        option: "--output text"
+        default: true
+    - json:         # Machine-readable format for scripting
+        option: "--output json"
+        default: false
+  
+  global_flags:
+    - flag: "--verbose"
+      description: "Enable verbose output for debugging"
+      optional: true
+    - flag: "--help"
+      description: "Show help information"
+      optional: true
+  
+  storage:
+    type: "local file"
+    location: "tasks.json"
+    description: "Tasks are persisted in a local JSON file in the current directory"
+
+# ===== CONSTRAINTS =====
+constraints:
+  - "No authentication required"
+  - "No multi-user support"
+  - "Local file-based storage"
+  - "No advanced fields (priority, tags, due dates, etc.)"
+  - "No recurrence"
+  - "No subtasks"
+
+# ===== SUCCESS CRITERIA =====
+success_criteria:
+  - "User can create tasks with title"
+  - "User can list all tasks"
+  - "User can filter tasks by status"
+  - "User can update task title and status"
+  - "User can delete tasks"
+  - "User can mark tasks as complete"
+  - "All operations work via CLI commands"
+  - "Data persists between sessions"
+
+# ==========================================
+# Phase 1 exposes minimal functionality.
+# Future phases will expose more fields and skills.
+# ==========================================

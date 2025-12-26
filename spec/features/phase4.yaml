@@ -1,0 +1,5 @@
+# Phase 4 Features
+phase: 4
+features:
+  - name: "feature4"
+    description: "Phase 4 feature description"

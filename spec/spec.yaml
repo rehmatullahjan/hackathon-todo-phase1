@@ -1,0 +1,63 @@
+# ==========================================
+# ACTIVE SPECIFICATION COMPOSITION
+# ==========================================
+# This file composes the active specification for the current phase.
+# It references immutable contracts (domain, skills) and phase-specific features.
+
+version: "1.0.0"
+active_phase: 1
+
+# ===== COMPOSITION =====
+composition:
+  # Immutable contracts (NEVER change after Phase 1)
+  domain:
+    file: domain.yaml
+    description: "Complete Task domain model"
+    immutable: true
+  
+  skills:
+    file: skills.yaml
+    description: "Stable skill interface contracts"
+    immutable: true
+  
+  # Phase-specific feature exposure
+  features:
+    file: features/phase1.yaml
+    description: "Phase 1 CLI feature exposure"
+    phase_specific: true
+
+# ===== VALIDATION =====
+validation:
+  # Referential integrity
+  - "All exposed_fields in phase files must exist in domain.yaml"
+  - "All exposed_skills in phase files must exist in skills.yaml"
+  - "All skill inputs in phase files must match skill definitions in skills.yaml"
+  
+  # Immutability enforcement
+  - "domain.yaml must NOT be modified after Phase 1"
+  - "skills.yaml must NOT be modified after Phase 1"
+  - "No new domain fields may be added in phase-specific files"
+  - "No new skills may be added in phase-specific files"
+  - "Phase-specific features can only expose/hide existing domain fields and skills"
+  
+  # Phase safety
+  - "Each phase file must only reference immutable contracts"
+  - "Phase files cannot override domain validation rules"
+  - "Phase files cannot change skill input/output schemas"
+  
+  # Data integrity
+  - "All timestamp fields must follow ISO 8601 format as defined in domain.yaml"
+  - "Status values in phase files must be subset of domain.yaml status enum"
+  - "Field constraints in phase files cannot be more permissive than domain.yaml"
+
+# ===== FUTURE PHASES =====
+# Phase 2: features/phase2.yaml will expose more fields (priority, due_date, etc.)
+# Phase 3: features/phase3.yaml may add web interface
+# Phase 4: features/phase4.yaml may add collaboration features
+# Phase 5: features/phase5.yaml may add advanced features (recurrence, AI, etc.)
+#
+# domain.yaml and skills.yaml remain UNCHANGED across all phases.
+
+# ==========================================
+# END OF ACTIVE SPECIFICATION
+# ==========================================

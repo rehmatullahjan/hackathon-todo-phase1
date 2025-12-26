@@ -1,0 +1,5 @@
+# Phase 2 Features
+phase: 2
+features:
+  - name: "feature2"
+    description: "Phase 2 feature description"

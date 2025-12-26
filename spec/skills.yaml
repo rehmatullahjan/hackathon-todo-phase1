@@ -1,0 +1,364 @@
+# ==========================================
+# SKILLS SPECIFICATION - DO NOT MODIFY AFTER PHASE 1
+# ==========================================
+# Skills represent business capabilities, not UI or transport.
+# These interfaces are stable across all 5 phases.
+# All skills are transport-agnostic (no HTTP, CLI, MCP references).
+
+version: "1.0.0"
+
+skills:
+  # ===== CREATE =====
+  - name: create_task
+    description: "Create a new task"
+    
+    inputs:
+      title:
+        type: string
+        required: true
+        constraints:
+          min_length: 1
+          max_length: 500
+      
+      status:
+        type: string
+        required: false
+        default: "pending"
+      
+      priority:
+        type: string
+        required: false
+      
+      tags:
+        type: array
+        required: false
+      
+      category:
+        type: string
+        required: false
+      
+      due_date:
+        type: timestamp
+        required: false
+      
+      start_date:
+        type: timestamp
+        required: false
+      
+      description:
+        type: string
+        required: false
+      
+      parent_id:
+        type: string
+        required: false
+      
+      assigned_to:
+        type: string
+        required: false
+      
+      metadata:
+        type: object
+        required: false
+    
+    outputs:
+      task:
+        type: Task
+        description: "The created task with generated id and timestamps"
+    
+    errors:
+      - code: INVALID_INPUT
+        description: "Input validation failed"
+      - code: PARENT_NOT_FOUND
+        description: "Specified parent_id does not exist"
+      - code: CREATION_FAILED
+        description: "Task creation failed"
+
+  # ===== READ / QUERY =====
+  - name: get_task
+    description: "Retrieve a task by ID"
+    
+    inputs:
+      id:
+        type: string
+        required: true
+    
+    outputs:
+      task:
+        type: Task
+        description: "The requested task"
+    
+    errors:
+      - code: NOT_FOUND
+        description: "Task with given ID does not exist"
+
+  - name: list_tasks
+    description: "List tasks with optional filtering and pagination"
+    
+    inputs:
+      status:
+        type: string
+        required: false
+        description: "Filter by status"
+      
+      priority:
+        type: string
+        required: false
+        description: "Filter by priority"
+      
+      tags:
+        type: array
+        required: false
+        description: "Filter by tags"
+      
+      tags_filter_logic:
+        type: enum
+        required: false
+        description: "How to combine tag filters"
+        values: [and, or]
+        default: and
+      
+      category:
+        type: string
+        required: false
+        description: "Filter by category"
+      
+      parent_id:
+        type: string
+        required: false
+        description: "Filter by parent (get subtasks)"
+      
+      assigned_to:
+        type: string
+        required: false
+        description: "Filter by assignee"
+      
+      include_archived:
+        type: boolean
+        required: false
+        default: false
+      
+      include_deleted:
+        type: boolean
+        required: false
+        default: false
+      
+      sort_by:
+        type: string
+        required: false
+        description: "Field to sort by"
+      
+      sort_order:
+        type: string
+        required: false
+        values: [asc, desc]
+        default: asc
+      
+      limit:
+        type: integer
+        required: false
+        description: "Maximum results to return"
+      
+      offset:
+        type: integer
+        required: false
+        description: "Pagination offset"
+    
+    outputs:
+      tasks:
+        type: array
+        item_type: Task
+        description: "List of matching tasks"
+      
+      total_count:
+        type: integer
+        description: "Total matching tasks (for pagination)"
+    
+    errors:
+      - code: INVALID_FILTER
+        description: "Invalid filter parameters"
+
+  # ===== UPDATE =====
+  - name: update_task
+    description: "Update an existing task"
+    
+    inputs:
+      id:
+        type: string
+        required: true
+      
+      title:
+        type: string
+        required: false
+        constraints:
+          min_length: 1
+          max_length: 500
+      
+      status:
+        type: string
+        required: false
+      
+      priority:
+        type: string
+        required: false
+      
+      tags:
+        type: array
+        required: false
+      
+      category:
+        type: string
+        required: false
+      
+      due_date:
+        type: timestamp
+        required: false
+      
+      start_date:
+        type: timestamp
+        required: false
+      
+      description:
+        type: string
+        required: false
+      
+      notes:
+        type: string
+        required: false
+      
+      parent_id:
+        type: string
+        required: false
+      
+      assigned_to:
+        type: string
+        required: false
+      
+      metadata:
+        type: object
+        required: false
+    
+    outputs:
+      task:
+        type: Task
+        description: "The updated task"
+    
+    errors:
+      - code: NOT_FOUND
+        description: "Task with given ID does not exist"
+      - code: INVALID_INPUT
+        description: "Update validation failed"
+      - code: UPDATE_FAILED
+        description: "Task update failed"
+
+  # ===== DELETE =====
+  - name: delete_task
+    description: "Delete a task (soft or hard delete)"
+    
+    inputs:
+      id:
+        type: string
+        required: true
+      
+      hard_delete:
+        type: boolean
+        required: false
+        default: false
+        description: "If false, performs soft delete"
+    
+    outputs:
+      success:
+        type: boolean
+        description: "Whether deletion succeeded"
+    
+    errors:
+      - code: NOT_FOUND
+        description: "Task with given ID does not exist"
+      - code: DELETE_FAILED
+        description: "Task deletion failed"
+
+  # ===== SPECIALIZED OPERATIONS =====
+  - name: complete_task
+    description: "Mark a task as completed"
+    
+    inputs:
+      id:
+        type: string
+        required: true
+    
+    outputs:
+      task:
+        type: Task
+        description: "The completed task"
+    
+    errors:
+      - code: NOT_FOUND
+        description: "Task with given ID does not exist"
+      - code: ALREADY_COMPLETED
+        description: "Task is already completed"
+
+  - name: archive_task
+    description: "Archive a task"
+    
+    inputs:
+      id:
+        type: string
+        required: true
+    
+    outputs:
+      task:
+        type: Task
+        description: "The archived task"
+    
+    errors:
+      - code: NOT_FOUND
+        description: "Task with given ID does not exist"
+
+  - name: search_tasks
+    description: "Full-text search across task fields"
+    
+    inputs:
+      query:
+        type: string
+        required: true
+        description: "Search query text"
+      
+      fields:
+        type: array
+        required: false
+        description: "Fields to search (title, description, notes)"
+        default: [title, description]
+      
+      sort_by:
+        type: string
+        required: false
+        description: "Field to sort results by"
+      
+      sort_order:
+        type: string
+        required: false
+        values: [asc, desc]
+        default: asc
+        description: "Sort direction"
+      
+      limit:
+        type: integer
+        required: false
+    
+    outputs:
+      tasks:
+        type: array
+        item_type: Task
+        description: "Matching tasks"
+      
+      total_count:
+        type: integer
+    
+    errors:
+      - code: INVALID_QUERY
+        description: "Search query is invalid"
+
+# ==========================================
+# END OF SKILLS SPECIFICATION
+# DO NOT MODIFY AFTER PHASE 1
+# ==========================================

@@ -5,7 +5,7 @@
 # It references immutable contracts (domain, skills) and phase-specific features.
 
 version: "1.0.0"
-active_phase: 1
+active_phase: 2
 
 # ===== COMPOSITION =====
 composition:

@@ -1,58 +1,79 @@
-# Hackathon Todo - Phase 1
+# Hackathon Todo - Phase 2 (Web App)
 
-**Phase 1 Strict In-Memory implementation of the Hackathon Todo Spec.**
+**Full-stack Web Application for Task Management with Persistence, Search, and Filtering.**
 
-This project is a single-file Python console application that strictly adheres to the Phase 1 specifications. It runs entirely in memory and provides a robust CLI for task management.
+Built on top of the Phase 1 CLI, Phase 2 adds a FastAPI backend, SQLModel persistence (SQLite/Postgres), and a Next.js frontend.
 
 ## 🚀 Features
 
-- **Strict Phase 1 Compliance**: Only `id`, `title`, `status`, `created_at`, `updated_at`.
-- **In-Memory Persistence**: Fast, ephemeral storage during runtime.
-- **Robust Validation**: Prevents invalid states, empty titles, and duplicate completions.
-- **Zero Dependencies**: Runs on standard Python 3.
+- **Web Dashboard**: View tasks with status colors, priority badges, and due dates.
+- **Rich Task Management**: Create, Edit, Delete, Complete tasks.
+- **Search & Filter**: Full-text search, filter by status/priority/tags.
+- **Persistence**: Data saved to `database.db` (SQLite) or external DB.
+- **Phase 1 Compatible**: Legacy CLI tool (`src/todo.py`) still works independently.
 
-## 🛠️ Setup & Usage
+## 🛠️ Project Structure
 
-### Prerequisites
-- Python 3.x installed
+- `backend/` - FastAPI app, SQLModel, CRUD logic.
+- `frontend/` - Next.js React app.
+- `src/` - Phase 1 CLI tool (In-Memory).
+- `spec/` - Feature specifications.
 
-### Running the App
-1. Clone the repository:
+## ⚙️ Setup & Running
+
+### 1. Backend (FastAPI)
+
+1. Navigate to the root folder.
+2. Install dependencies:
    ```bash
-   git clone https://github.com/YOUR_USERNAME/hackathon-todo-phase1.git
-   cd hackathon-todo-phase1
+   pip install -r requirements.txt
    ```
-2. Run the application:
+3. Run the server:
    ```bash
-   python src/todo.py
+   uvicorn backend.main:app --reload
    ```
+   *Server runs at http://localhost:8000*
+   *Automatic API Docs: http://localhost:8000/docs*
 
-### Commands
+### 2. Frontend (Next.js)
 
-| Command | Usage | Description |
-|---------|-------|-------------|
-| **Add** | `add <title>` | Create a new task |
-| **List** | `list` | Show all tasks |
-| **Show** | `show <id>` | View details of a specific task |
-| **Update**| `update <id> <value>` | Update title OR status (e.g. `in_progress`) |
-| **Complete**| `complete <id>` | Mark a task as completed |
-| **Delete** | `delete <id>` | Remove a task |
-| **Help** | `help` | Show available commands |
-| **Exit** | `exit` | Close the application |
+1. Open a new terminal.
+2. Navigate to frontend:
+   ```bash
+   cd frontend
+   ```
+3. Install packages:
+   ```bash
+   npm install
+   ```
+4. Run the dev server:
+   ```bash
+   npm run dev
+   ```
+   *App runs at http://localhost:3000*
+
+### 3. Phase 1 CLI (Legacy)
+
+You can still use the CLI tool (runs in isolation):
+```bash
+python src/todo.py
+```
 
 ## 🧪 Testing
 
-A verification script is included to demonstrate robustness:
+### Backend Tests
+Run pytest to verify the API logic:
+```bash
+pytest backend/tests/test_backend.py
+```
 
+### Phase 1 Regression
+Run the robustness checker:
 ```bash
 python verify_robustness.py
 ```
 
-## 📝 Phase Notes
+## 📝 Configuration
 
-- **Architecture**: Single-file (`src/todo.py`) for simplicity and portability in Phase 1.
-- **Future Phases**: This implementation is designed to be easily extended. The `Task` class and `TodoApp` structure can be adapted for persistence (Phase 2) and additional fields (Phase 3+) without breaking changes.
-- **Immutability**: `domain.yaml` and `spec.yaml` contracts are respected.
-
----
-*Ready for Phase 1 Judging*
+- **Database**: Defaults to `sqlite:///./backend/database.db`. Set `DATABASE_URL` environment variable to use PostgreSQL/Neon.
+  - Example: `DATABASE_URL=postgresql://user:pass@host/db uvicorn ...`

@@ -1,0 +1,10 @@
+fastapi
+sqlmodel
+uvicorn
+pytest
+httpx
+requests
+python-multipart
+python-dotenv
+# Optional for Postgres
+psycopg2-binary

@@ -1,5 +1,65 @@
-# Phase 2 Features
+# ==========================================
+# PHASE 2 - WEB APP & EXTENDED FIELDS
+# ==========================================
 phase: 2
-features:
-  - name: "feature2"
-    description: "Phase 2 feature description"
+name: "Web Todo App"
+description: "Web interface with rich task management, sorting, and filtering"
+
+# ===== EXPOSED FIELDS =====
+exposed_fields:
+  # Phase 1 Fields (Inherited implicit, but good to list if strictly defining 'exposed' for this phase)
+  - id
+  - title
+  - status
+  - created_at
+  - updated_at
+  
+  # Phase 2 New Fields
+  - description     # For search context
+  - priority        # low, medium, high, urgent
+  - tags            # Categorization
+  - category        # Broad grouping
+  - due_date        # Deadline
+  - start_date      # Schedule start
+
+# ===== EXPOSED SKILLS =====
+exposed_skills:
+  # Phase 1 Skills
+  - create_task
+  - list_tasks
+  - get_task
+  - update_task
+  - delete_task
+  - complete_task
+  
+  # Phase 2 New Skills
+  - search_tasks:
+      description: "Full-text search in title and description"
+      allowed_inputs:
+        - query
+  
+  - list_tasks:   # Enhanced list with filters/sort
+      description: "List tasks with sorting and filtering"
+      allowed_inputs:
+        - status
+        - priority
+        - tags
+        - category
+        - sort_by     # title, priority, due_date
+        - sort_order  # asc, desc
+
+# ===== INTERFACE =====
+interface:
+  type: web
+  frontend: "Next.js"
+  backend: "FastAPI"
+  database: "SQLModel (SQLite/Postgres)"
+
+# ===== SUCCESS CRITERIA =====
+success_criteria:
+  - "User can set priority, due dates, and tags"
+  - "User can search tasks by text"
+  - "User can filter by multiple criteria"
+  - "User can sort the task list"
+  - "Data persists in database"
+  - "Phase 1 CLI still operates (on its own memory/file scope)"

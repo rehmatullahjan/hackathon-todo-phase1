@@ -1,5 +1,59 @@
-# Phase 3 Features
+# ==========================================
+# PHASE 3 - AI CHATBOT & AUTOMATION
+# ==========================================
 phase: 3
-features:
-  - name: "feature3"
-    description: "Phase 3 feature description"
+name: "AI-Powered Todo Chatbot"
+description: "AI interactions, recurring tasks, and smart reminders"
+
+# ===== EXPOSED FIELDS =====
+exposed_fields:
+  # Inherited Fields
+  - id
+  - title
+  - status
+  - priority
+  - tags
+  - category
+  - due_date
+  
+  # Phase 3 New Fields
+  - recurrence_rule # e.g., "daily", "weekly on Mondays", "0 9 * * 1"
+  - reminder_at     # Exact datetime for notification
+  - ai_summary      # Auto-generated summary of the task context
+
+# ===== EXPOSED SKILLS =====
+exposed_skills:
+  # Inherited Skills
+  - create_task
+  - list_tasks
+  - update_task
+  - complete_task
+  - search_tasks
+  
+  # Phase 3 New Skills
+  - create_recurring_task:
+      description: "Create a task that repeats on a schedule"
+      allowed_inputs:
+        - title
+        - recurrence_rule
+  
+  - chat_with_todo:
+      description: "Interact with tasks via natural language"
+      allowed_inputs:
+        - message
+        - context
+
+# ===== INTERFACE =====
+interface:
+  type: hybrid
+  frontend: "Next.js + OpenAI ChatKit"
+  backend: "FastAPI + Agents SDK + MCP"
+  database: "SQLModel (SQLite/Postgres)"
+
+# ===== SUCCESS CRITERIA =====
+success_criteria:
+  - "User can create recurring tasks (e.g., 'every Monday')"
+  - "System auto-generates tasks based on recurrence rules"
+  - "User receives browser notifications for due tasks"
+  - "User can add/query tasks via Chatbot interface"
+  - "AI understands context of existing tasks"

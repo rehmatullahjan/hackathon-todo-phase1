@@ -46,18 +46,34 @@ const TaskList = ({ tasks, onDelete, onComplete }) => {
                 <div key={task.id} className="group bg-white rounded-xl border border-gray-200 shadow-sm hover:shadow-md transition-all duration-200 flex flex-col overflow-hidden relative">
                     {/* Top Border for Priority */}
                     <div className={`h-1 w-full ${task.priority === 'urgent' ? 'bg-red-500' :
-                            task.priority === 'high' ? 'bg-orange-400' :
-                                task.priority === 'medium' ? 'bg-blue-400' : 'bg-green-400'
+                        task.priority === 'high' ? 'bg-orange-400' :
+                            task.priority === 'medium' ? 'bg-blue-400' : 'bg-green-400'
                         }`}></div>
 
                     <div className="p-5 flex-grow">
-                        <div className="flex justify-between items-start mb-3">
-                            <PriorityBadge priority={task.priority} />
-                            {task.due_date && (
-                                <span className="text-xs text-gray-500 font-medium bg-gray-50 px-2 py-1 rounded">
-                                    Due {new Date(task.due_date).toLocaleDateString()}
-                                </span>
-                            )}
+                        <div className="flex justify-between items-start mb-3 gap-2">
+                            <div className="flex flex-col gap-1.5">
+                                <PriorityBadge priority={task.priority} />
+                                {task.recurrence_rule && (
+                                    <div className="flex items-center text-[10px] font-bold text-indigo-600 bg-indigo-50 px-1.5 py-0.5 rounded uppercase tracking-wider border border-indigo-100 w-fit">
+                                        <svg className="w-3 h-3 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"></path></svg>
+                                        {task.recurrence_rule}
+                                    </div>
+                                )}
+                            </div>
+                            <div className="flex flex-col items-end gap-1.5">
+                                {task.due_date && (
+                                    <span className="text-[10px] text-gray-500 font-bold bg-gray-50 px-2 py-0.5 rounded uppercase tracking-wider border border-gray-100">
+                                        Due {new Date(task.due_date).toLocaleDateString()}
+                                    </span>
+                                )}
+                                {task.reminder_at && (
+                                    <span className="text-[10px] text-amber-600 font-bold bg-amber-50 px-2 py-0.5 rounded uppercase tracking-wider border border-amber-100 flex items-center">
+                                        <svg className="w-3 h-3 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9"></path></svg>
+                                        {new Date(task.reminder_at).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
+                                    </span>
+                                )}
+                            </div>
                         </div>
 
                         <h3 className={`text-lg font-bold text-gray-900 mb-2 truncate ${task.status === 'completed' ? 'line-through text-gray-500' : ''}`}>
@@ -75,9 +91,8 @@ const TaskList = ({ tasks, onDelete, onComplete }) => {
                                 </span>
                             )}
                             {task.tags && (
-                                // Handle potential JSON string or array, safely
-                                Array.isArray(task.tags) ? task.tags :
-                                    (task.tags.startsWith('[') ? JSON.parse(task.tags) : [])
+                                (typeof task.tags === 'string' && task.tags.startsWith('[') ? JSON.parse(task.tags) :
+                                    Array.isArray(task.tags) ? task.tags : [])
                             ).map((tag, idx) => (
                                 <span key={idx} className="text-xs bg-gray-100 text-gray-600 px-2 py-1 rounded border border-gray-200">
                                     #{tag}

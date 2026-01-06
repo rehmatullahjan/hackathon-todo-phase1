@@ -9,17 +9,22 @@ const TaskForm = ({ initialData = {}, onSubmit, onCancel }) => {
         tags: '',
         category: '',
         due_date: '',
-        start_date: ''
+        start_date: '',
+        recurrence_rule: '',
+        reminder_at: ''
     });
 
     useEffect(() => {
         if (initialData && Object.keys(initialData).length > 0) {
             const fmtDate = (d) => d ? new Date(d).toISOString().split('T')[0] : '';
+            const fmtDateTime = (d) => d ? new Date(d).toISOString().slice(0, 16) : '';
             setFormData({
                 ...initialData,
                 tags: initialData.tags ? initialData.tags.replace(/[\[\]"]/g, '') : '',
                 due_date: fmtDate(initialData.due_date),
                 start_date: fmtDate(initialData.start_date),
+                recurrence_rule: initialData.recurrence_rule || '',
+                reminder_at: fmtDateTime(initialData.reminder_at),
             });
         }
     }, [initialData]);
@@ -35,7 +40,9 @@ const TaskForm = ({ initialData = {}, onSubmit, onCancel }) => {
             ...formData,
             tags: JSON.stringify(formData.tags.split(',').map(t => t.trim()).filter(Boolean)),
             due_date: formData.due_date ? new Date(formData.due_date).toISOString() : null,
-            start_date: formData.start_date ? new Date(formData.start_date).toISOString() : null
+            start_date: formData.start_date ? new Date(formData.start_date).toISOString() : null,
+            reminder_at: formData.reminder_at ? new Date(formData.reminder_at).toISOString() : null,
+            recurrence_rule: formData.recurrence_rule || null
         };
         onSubmit(submitData);
     };
@@ -149,6 +156,33 @@ const TaskForm = ({ initialData = {}, onSubmit, onCancel }) => {
                                     name="tags"
                                     placeholder="top-secret, v1"
                                     value={formData.tags}
+                                    onChange={handleChange}
+                                    className="block w-full rounded-lg border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 py-2.5"
+                                />
+                            </div>
+                        </div>
+
+                        <div className="grid grid-cols-2 gap-4">
+                            <div>
+                                <label className="block text-sm font-semibold text-gray-700 mb-1">Recurrence</label>
+                                <select
+                                    name="recurrence_rule"
+                                    value={formData.recurrence_rule}
+                                    onChange={handleChange}
+                                    className="block w-full rounded-lg border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 py-2.5"
+                                >
+                                    <option value="">None</option>
+                                    <option value="daily">Daily</option>
+                                    <option value="weekly">Weekly</option>
+                                    <option value="monthly">Monthly</option>
+                                </select>
+                            </div>
+                            <div>
+                                <label className="block text-sm font-semibold text-gray-700 mb-1">Reminder</label>
+                                <input
+                                    type="datetime-local"
+                                    name="reminder_at"
+                                    value={formData.reminder_at}
                                     onChange={handleChange}
                                     className="block w-full rounded-lg border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 py-2.5"
                                 />

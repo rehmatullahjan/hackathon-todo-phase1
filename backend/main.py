@@ -6,6 +6,8 @@ from .database import create_db_and_tables, get_session
 from .models import Task, TaskCreate, TaskUpdate, TaskStatus, TaskPriority
 from . import crud
 from contextlib import asynccontextmanager
+from pydantic import BaseModel
+from .agent import TodoAgent
 
 @asynccontextmanager
 async def lifespan(app: FastAPI):
@@ -74,3 +76,12 @@ def complete_task(task_id: str, session: Session = Depends(get_session)):
 @app.get("/search", response_model=List[Task])
 def search_tasks(query: str, session: Session = Depends(get_session)):
     return crud.search_tasks(session, query)
+
+class ChatRequest(BaseModel):
+    message: str
+
+@app.post("/chat")
+def chat_agent(request: ChatRequest, session: Session = Depends(get_session)):
+    agent = TodoAgent(session)
+    response = agent.process_message(request.message)
+    return {"response": response}

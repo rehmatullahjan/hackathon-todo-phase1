@@ -42,6 +42,11 @@ class TaskBase(SQLModel):
 
     due_date: Optional[datetime] = Field(default=None)
     start_date: Optional[datetime] = Field(default=None)
+    
+    # Phase 3 Fields
+    recurrence_rule: Optional[str] = Field(default=None, description="Natural language recurrence rule e.g. 'daily'")
+    reminder_at: Optional[datetime] = Field(default=None)
+    ai_summary: Optional[str] = Field(default=None, description="AI-generated summary")
 
 class Task(TaskBase, table=True):
     id: str = Field(default_factory=lambda: str(uuid.uuid4()), primary_key=True)
@@ -61,3 +66,6 @@ class TaskUpdate(SQLModel):
     tags: Optional[str] = None
     due_date: Optional[datetime] = None
     start_date: Optional[datetime] = None
+    recurrence_rule: Optional[str] = None
+    reminder_at: Optional[datetime] = None
+    ai_summary: Optional[str] = None

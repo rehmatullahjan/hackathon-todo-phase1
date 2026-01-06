@@ -1,4 +1,4 @@
-# Hackathon Todo - Phase 2 (Web App)
+# Hackathon Todo - Phase 3 (AI Chatbot)
 
 **Full-stack Web Application for Task Management with Persistence, Search, and Filtering.**
 
@@ -6,6 +6,9 @@ Built on top of the Phase 1 CLI, Phase 2 adds a FastAPI backend, SQLModel persis
 
 ## 🚀 Features
 
+- **AI Chatbot**: "Todo Assistant" powered by Google Gemini (or OpenAI) to create/search tasks via natural language.
+- **Recurring Tasks**: Support for daily/weekly task recurrence rules.
+- **Smart Reminders**: Due date tracking.
 - **Web Dashboard**: View tasks with status colors, priority badges, and due dates.
 - **Rich Task Management**: Create, Edit, Delete, Complete tasks.
 - **Search & Filter**: Full-text search, filter by status/priority/tags.
@@ -77,3 +80,17 @@ python verify_robustness.py
 
 - **Database**: Defaults to `sqlite:///./backend/database.db`. Set `DATABASE_URL` environment variable to use PostgreSQL/Neon.
   - Example: `DATABASE_URL=postgresql://user:pass@host/db uvicorn ...`
+
+### 🔑 API Keys (For AI Features)
+
+To use the AI Chatbot, you must provide an API Key. Rename `.env.example` to `.env` and add your key:
+
+```env
+# Use Google Gemini (Recommended/Free Tier available)
+GOOGLE_API_KEY=AIzaSy...
+
+# OR OpenAI
+OPENAI_API_KEY=sk-...
+```
+
+The system automatically detects which key is present. If no key is found, the chat widget will display "AI Agent is disabled".

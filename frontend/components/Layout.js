@@ -1,6 +1,9 @@
 import React from 'react';
 import Head from 'next/head';
 import Link from 'next/link';
+import ChatWidget from './ChatWidget';
+import NotificationManager from './NotificationManager';
+
 
 const Layout = ({ children, title = "Hackathon Todo" }) => {
     return (
@@ -30,6 +33,8 @@ const Layout = ({ children, title = "Hackathon Todo" }) => {
             <main className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
                 {children}
             </main>
+            <ChatWidget />
+            <NotificationManager />
         </div>
     );
 };
